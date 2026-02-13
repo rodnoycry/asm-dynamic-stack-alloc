@@ -17,24 +17,28 @@ push_to_arr:
     MOV eax,[length]
     CMP eax,[capacity]
     JE panic
-    MOV eax,[length]
+    MOV ecx,[length]
+    INC ecx
+    MOV [length],ecx
     INC eax
     MUL dword [unit_size]
-    ADD eax,8
-    MOV ebx,[ebp + 8]
-    MOV dword [eax],ebx
+    MOV ecx,ebp
+    SUB ecx,eax
+    MOV ebx,[esp + 4]
+    MOV dword [ecx],ebx
     RET
 
 _start:
+    ; Saving ebp
+    PUSH ebp
+    ; Caching esp value in ebp
+    MOV ebp,esp
+    
     ; Allocating the memory
     MOV eax,[capacity]
     MUL dword [unit_size]
     SUB esp,eax
 
-    ; Saving ebp
-    PUSH ebp
-    ; Caching esp value in ebp
-    MOV ebp,esp
     ; Pushing new value
     PUSH 42
     CALL push_to_arr
