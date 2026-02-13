@@ -11,8 +11,7 @@ grow:
     MOV ecx,[capacity]
     INC ecx
     MOV [capacity],ecx
-    SUB esp,4
-    JMP grow_anchor
+    JMP write_val
 
 push_to_arr:
     ; basic pushing logic
@@ -20,7 +19,7 @@ push_to_arr:
     CMP eax,[capacity]
     MOV ebx,[esp + 4]
     JE grow
-grow_anchor:
+write_val:
     MOV ecx,[length]
     INC ecx
     MOV [length],ecx
@@ -60,6 +59,10 @@ _start:
 
     ; Pushing new value
     PUSH 99
+    CALL push_to_arr
+
+    ; Pushing new value
+    PUSH 17
     CALL push_to_arr
 
     ; Exiting
