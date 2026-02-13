@@ -7,16 +7,20 @@ section .text
 
 global _start
 
-panic:
-    MOV ebx,1
-    MOV eax,1
-    INT 80h
+grow:
+    MOV ecx,[capacity]
+    INC ecx
+    MOV [capacity],ecx
+    SUB esp,4
+    JMP grow_anchor
 
 push_to_arr:
     ; basic pushing logic
     MOV eax,[length]
     CMP eax,[capacity]
-    JE panic
+    MOV ebx,[esp + 4]
+    JE grow
+grow_anchor:
     MOV ecx,[length]
     INC ecx
     MOV [length],ecx
@@ -24,7 +28,6 @@ push_to_arr:
     MUL dword [unit_size]
     MOV ecx,ebp
     SUB ecx,eax
-    MOV ebx,[esp + 4]
     MOV dword [ecx],ebx
     RET
 
@@ -41,6 +44,22 @@ _start:
 
     ; Pushing new value
     PUSH 42
+    CALL push_to_arr
+
+    ; Pushing new value
+    PUSH 88
+    CALL push_to_arr
+
+    ; Pushing new value
+    PUSH 12
+    CALL push_to_arr
+
+    ; Pushing new value
+    PUSH 35
+    CALL push_to_arr
+
+    ; Pushing new value
+    PUSH 99
     CALL push_to_arr
 
     ; Exiting
